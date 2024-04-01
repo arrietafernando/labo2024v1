@@ -183,7 +183,3 @@ project/target
 
 .vscode/settings.json
 .Rproj.user
-
-# R
-.RData
-.Rhistory
