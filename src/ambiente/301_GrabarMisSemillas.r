@@ -14,4 +14,3 @@ fwrite( tabla_semillas,
     file = "../../buckets/b1/datasets/mis_semillas.txt",
     sep = "\t"
 )
-a
