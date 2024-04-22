@@ -326,7 +326,7 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001", "datasets_competencia_2024.csv.gz")
+  DT_incorporar_dataset_default( "DT0001", "competencia_2024.csv.gz")
   CA_catastrophe_default( "CA0001", "DT0001" )
 
   DR_drifting_guantesblancos( "DR0001", "CA0001" )
