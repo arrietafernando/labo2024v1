@@ -417,35 +417,74 @@ CanaritosAsesinos <- function(
 }
 #------------------------------------------------------------------------------
 
-BorutaFilter <- function( boruta_semilla ) {
+BorutaFilter <- function( boruta_semilla, boruta_max_run ) {
   
   gc()
-  #OUTPUT$cols_pre_boruta <- ncol(dataset)
-  
+
   ## PREPARACION DATASET
-  
+
+  ##################### DEBUG FER START #####################
+  # 
+  # setwd("/Users/fernando/buckets/b1/flow/gb01_boruta_100/DR0001_boruta_100/")
+  # 
+  # campitos <- c( PARAM$dataset_metadata$primarykey,
+  #                PARAM$dataset_metadata$entity_id,
+  #                PARAM$dataset_metadata$periodo,
+  #                PARAM$dataset_metadata$clase )
+  # campitos <- unique( campitos )
+  # PARAM <- read_yaml( "parametros.yml" )
+  # OUTPUT <- list()
+  # 
+  # dataset <- fread("/Users/fernando/buckets/b1/flow/gb01_boruta_100/DR0001_boruta_100/dataset.csv.gz")
+  # 
+  # dataset[, clase01 := ifelse(clase_ternaria == "CONTINUA", 0, 1)]
+  # 
+  # campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria"))
+  # 
+  # dataset_boruta <- copy(dataset[, campos_buenos, with = FALSE])
+  # 
+  # set.seed(PARAM$semilla, kind = "L'Ecuyer-CMRG")
+  # azar <- runif(nrow(dataset_boruta))
+  # 
+  # dataset_boruta[, entrenamiento :=
+  #              as.integer(foto_mes >= 202101 & foto_mes <= 202103 &
+  #                           (clase01 == 1 | azar < 0.10))]
+  # 
+  # # imputo los nulos, ya que ranger no acepta nulos
+  # # Leo Breiman, ¿por que le temias a los nulos?
+  # set.seed(PARAM$semilla, kind = "L'Ecuyer-CMRG")
+  # dataset_boruta <- na.roughfix(dataset_boruta)
+  # 
+  # campos_buenos <- setdiff(
+  #   colnames(dataset_boruta),
+  #   c("clase_ternaria", "entrenamiento")
+  # )
+  # 
+  # Boruta(clase01~., data=dataset_boruta, doTrace=2, maxRuns=100)
+  # 
+  ##################### DEBUG FER END #####################
+
   # Armo un feature de clasificación
   dataset[, clase01 := ifelse(clase_ternaria == "CONTINUA", 0, 1)]
   # campos sobre los que vamos a hacer en entrenamiento
-  campos_buenos <- setdiff(
-    colnames(dataset),
-    c( campitos, "clase01")
-  )
+  campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria"))
+  
+  dataset_boruta <- copy(dataset[, campos_buenos, with = FALSE])
   
   # Armo una lista auxiliar para el under sampling clase00
   set.seed(boruta_semilla, kind = "L'Ecuyer-CMRG")
-  azar <- runif(nrow(dataset))
+  azar <- runif(nrow(dataset_boruta))
   
   # Agrego una columna para indicar cuales quiero usar del dataset
-  dataset[, entrenamiento :=
-            as.integer(
-              foto_mes >= 202101 & foto_mes <= 202103 & (clase01 == 1 | azar < 0.10)
-              )]
+  dataset_boruta[, entrenamiento :=
+                   as.integer(foto_mes >= 202101 & foto_mes <= 202103 &
+                                (clase01 == 1 | azar < 0.10))]
   
   # Imputo los nulos
-  dtrain = na.roughfix(dataset[entrenamiento==TRUE, ..campos_buenos])
+  set.seed(boruta_semilla, kind = "L'Ecuyer-CMRG")
+  dataset_boruta <- na.roughfix(dataset_boruta)
   
-  boruta_out <- Boruta(clase01 ~ ., data=dtrain, doTrace=2, maxRuns=PARAM$Boruta$max_runs)
+  boruta_out <- Boruta(clase01~., data=dataset_boruta, doTrace=2, maxRuns=boruta_max_run)
   
   fwrite(
     as.list(getSelectedAttributes(boruta_out)),
@@ -465,6 +504,12 @@ BorutaFilter <- function( boruta_semilla ) {
   col_inutiles <- setdiff(colnames(dataset), col_utiles)
   
   dataset[, (col_inutiles) := NULL]
+  
+  rm(dataset_boruta)
+  
+  dataset[, clase01 := NULL]
+  
+  gc()
 }
 
 
@@ -658,7 +703,10 @@ if (PARAM$CanaritosAsesinos$ratio > 0.0) {
 if( PARAM$Boruta$enabled ) {
   OUTPUT$Boruta$ncol_antes <- ncol(dataset)
 
-  BorutaFilter( boruta_semilla = PARAM$Boruta$semilla )
+  BorutaFilter( 
+    boruta_semilla = PARAM$Boruta$semilla,
+    boruta_max_run = PARAM$Boruta$max_runs
+    )
 
   OUTPUT$Boruta$ncol_despues <- ncol(dataset)
   GrabarOutput()

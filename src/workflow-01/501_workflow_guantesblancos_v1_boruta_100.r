@@ -145,7 +145,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
   param_local$meta$script <- "/src/workflow-01/541_FE_historia_boruta_100.r"
 
-  param_local$lag1 <- TRUE
+  param_local$lag1 <- FALSE ##TRUE
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
@@ -185,7 +185,8 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$CanaritosAsesinos$desvios <- 4.0
 
   # no me engraso las manos con boruta
-  param_local$Boruta$enabled <- FALSE # FALSE, no corre nada de lo que sigue
+  param_local$Boruta$enabled <- TRUE # FALSE, no corre nada de lo que sigue
+  param_local$Boruta$max_runs <- 100
   
   return( exp_correr_script( param_local ) ) # linea fija
 }
