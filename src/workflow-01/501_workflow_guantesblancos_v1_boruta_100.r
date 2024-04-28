@@ -5,10 +5,24 @@
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
 
-require("rlang")
-require("yaml")
-require("data.table")
-require("ParamHelpers")
+#require("rlang")
+#require("yaml")
+#require("data.table")
+#require("ParamHelpers")
+
+## First specify the packages of interest
+packages = c("rlang", "yaml", "data.table", "ParamHelpers")
+
+## Now load or install&load all
+package.check <- lapply(
+  packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
 
 # creo environment global
 envg <- env()
@@ -340,7 +354,7 @@ corrida_guantesblancos_202109 <- function( pnombrewf, pvirgen=FALSE )
 {
   if( -1 == exp_wf_init( pnombrewf, pvirgen) ) return(0) # linea fija
 
-  DT_incorporar_dataset_default( "DT0001_boruta_100", "datasets_competencia_2024.csv.gz")
+  DT_incorporar_dataset_default( "DT0001_boruta_100", "competencia_2024.csv.gz")
   CA_catastrophe_default( "CA0001_boruta_100", "DT0001_boruta_100" )
 
   DR_drifting_guantesblancos( "DR0001_boruta_100", "CA0001_boruta_100" )

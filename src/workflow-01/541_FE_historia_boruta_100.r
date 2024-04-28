@@ -5,16 +5,30 @@
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
 
-require("data.table")
-require("yaml")
-require("Rcpp")
+#require("data.table")
+#require("yaml")
+#require("Rcpp")
 
-require("ranger")
-require("randomForest") # solo se usa para imputar nulos
+#require("ranger")
+#require("randomForest") # solo se usa para imputar nulos
 
-require("lightgbm")
+#require("lightgbm")
 
-library("Boruta")
+#library("Boruta")
+
+## First specify the packages of interest
+packages = c("data.table", "yaml", "Rcpp", "ranger", "randomForest", "lightgbm", "Boruta")
+
+## Now load or install&load all
+package.check <- lapply(
+  packages,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
 
 #------------------------------------------------------------------------------
 
