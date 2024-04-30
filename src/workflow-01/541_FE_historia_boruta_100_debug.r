@@ -5,18 +5,8 @@
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
 
-#require("data.table")
-#require("yaml")
-#require("Rcpp")
 
-#require("ranger")
-#require("randomForest") # solo se usa para imputar nulos
-
-#require("lightgbm")
-
-#library("Boruta")
-
-## First specify the packages of interest
+## Instalamos los paquetes dinámicamente en el ambiente ya que "Boruta" no forma parte de la instalación imagen
 packages = c("data.table", "yaml", "Rcpp", "ranger", "randomForest", "lightgbm", "Boruta")
 
 ## Now load or install&load all
@@ -453,7 +443,7 @@ BorutaFilter <- function( boruta_semilla, boruta_max_run ) {
   # dataset <- fread("/Users/fernando/buckets/b1/flow/gb01_boruta_100/DR0001_boruta_100/dataset.csv.gz")
   # 
   # ncol(dataset)
-  #
+  # 
   # dataset[, clase01 := ifelse(clase_ternaria == "CONTINUA", 0, 1)]
   # 
   # campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria"))
@@ -463,10 +453,10 @@ BorutaFilter <- function( boruta_semilla, boruta_max_run ) {
   # set.seed(PARAM$semilla, kind = "L'Ecuyer-CMRG")
   # azar <- runif(nrow(dataset_boruta))
   # 
-  # dataset_boruta[, entrenamiento :=
-  #              as.integer(foto_mes >= 202101 & foto_mes <= 202103 &
-  #                           (clase01 == 1 | azar < 0.10))]
-  # OPCION PRUEBA
+  # #dataset_boruta[, entrenamiento :=
+  # #             as.integer(foto_mes >= 202101 & foto_mes <= 202103 &
+  # #                          (clase01 == 1 | azar < 0.10))]
+  # ## OPCION PRUEBA
   # dataset_boruta[, entrenamiento :=
   #              as.integer(foto_mes == 202101 &
   #                           (clase01 == 1 | azar < 0.10))]
