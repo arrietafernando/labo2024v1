@@ -137,7 +137,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   if( -1 == (param_local <- exp_init( pmyexp, pinputexps, pserver ))$resultado ) return( 0 )# linea fija
 
 
-  param_local$meta$script <- "/src/workflow-01/541_FE_historia_boruta_100.r"
+  param_local$meta$script <- "/src/workflow-01/541_FE_historia_boruta_100_2.r"
 
   param_local$lag1 <- TRUE 
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
@@ -163,7 +163,6 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$Tendencias2$ratioavg <- FALSE
   param_local$Tendencias2$ratiomax <- FALSE
 
-
   # No me engraso las manos con las variables nuevas agregadas por un RF
   # esta parte demora mucho tiempo en correr, y estoy en modo manos_limpias
   param_local$RandomForest$run <- FALSE
@@ -171,16 +170,23 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
   param_local$RandomForest$max.depth <- 4
   param_local$RandomForest$min.node.size <- 1000
   param_local$RandomForest$mtry <- 40
-
+  param_local$RandomForest$train_from <- 202101
+  param_local$RandomForest$train_to <- 202101
+  
   # no me engraso las manos con los Canaritos Asesinos
   # varia de 0.0 a 2.0, si es 0.0 NO se activan
   param_local$CanaritosAsesinos$ratio <- 0.0
   # desvios estandar de la media, para el cutoff
   param_local$CanaritosAsesinos$desvios <- 4.0
+  param_local$CanaritosAsesinos$train_from <- 202101
+  param_local$CanaritosAsesinos$train_to <- 202101
+  param_local$CanaritosAsesinos$valid <- 202103 # train_to + 2
 
   # no me engraso las manos con boruta
   param_local$Boruta$enabled <- TRUE # FALSE, no corre nada de lo que sigue
   param_local$Boruta$max_runs <- 100
+  param_local$Boruta$train_from <- 202101
+  param_local$Boruta$train_to <- 202101
   
   return( exp_correr_script( param_local ) ) # linea fija
 }
