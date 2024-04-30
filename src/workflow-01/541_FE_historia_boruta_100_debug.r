@@ -441,16 +441,19 @@ BorutaFilter <- function( boruta_semilla, boruta_max_run ) {
   # 
   # setwd("/Users/fernando/buckets/b1/flow/gb01_boruta_100/DR0001_boruta_100/")
   # 
+  # PARAM <- read_yaml( "parametros.yml" )
   # campitos <- c( PARAM$dataset_metadata$primarykey,
   #                PARAM$dataset_metadata$entity_id,
   #                PARAM$dataset_metadata$periodo,
   #                PARAM$dataset_metadata$clase )
   # campitos <- unique( campitos )
-  # PARAM <- read_yaml( "parametros.yml" )
+  # 
   # OUTPUT <- list()
   # 
   # dataset <- fread("/Users/fernando/buckets/b1/flow/gb01_boruta_100/DR0001_boruta_100/dataset.csv.gz")
   # 
+  # ncol(dataset)
+  #
   # dataset[, clase01 := ifelse(clase_ternaria == "CONTINUA", 0, 1)]
   # 
   # campos_buenos <- setdiff(colnames(dataset), c("clase_ternaria"))
@@ -463,18 +466,22 @@ BorutaFilter <- function( boruta_semilla, boruta_max_run ) {
   # dataset_boruta[, entrenamiento :=
   #              as.integer(foto_mes >= 202101 & foto_mes <= 202103 &
   #                           (clase01 == 1 | azar < 0.10))]
+  # OPCION PRUEBA
+  # dataset_boruta[, entrenamiento :=
+  #              as.integer(foto_mes == 202101 &
+  #                           (clase01 == 1 | azar < 0.10))]
   # 
   # # imputo los nulos, ya que ranger no acepta nulos
   # # Leo Breiman, ¿por que le temias a los nulos?
   # set.seed(PARAM$semilla, kind = "L'Ecuyer-CMRG")
-  # dataset_boruta <- na.roughfix(dataset_boruta)
+  # dataset_boruta <- na.roughfix(dataset_boruta[entrenamiento==TRUE, ..campos_buenos])
   # 
   # campos_buenos <- setdiff(
   #   colnames(dataset_boruta),
   #   c("clase_ternaria", "entrenamiento")
   # )
   # 
-  # Boruta(clase01~., data=dataset_boruta, doTrace=2, maxRuns=100)
+  # boruta_out <- Boruta(clase01~., data=dataset_boruta, doTrace=2, maxRuns=100)
   # 
   ##################### DEBUG FER END #####################
 
@@ -496,7 +503,7 @@ BorutaFilter <- function( boruta_semilla, boruta_max_run ) {
   
   # Imputo los nulos
   set.seed(boruta_semilla, kind = "L'Ecuyer-CMRG")
-  dataset_boruta <- na.roughfix(dataset_boruta)
+  dataset_boruta <- na.roughfix(dataset_boruta[entrenamiento==TRUE, ..campos_buenos])
   
   boruta_out <- Boruta(clase01~., data=dataset_boruta, doTrace=2, maxRuns=boruta_max_run)
   

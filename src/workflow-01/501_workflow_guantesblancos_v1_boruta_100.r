@@ -5,12 +5,8 @@
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
 
-#require("rlang")
-#require("yaml")
-#require("data.table")
-#require("ParamHelpers")
 
-## First specify the packages of interest
+## Instalamos los paquetes dinámicamente en el ambiente
 packages = c("rlang", "yaml", "data.table", "ParamHelpers")
 
 ## Now load or install&load all
@@ -26,23 +22,6 @@ package.check <- lapply(
 
 # creo environment global
 envg <- env()
-
-# envg$EXPENV <- list()
-# envg$EXPENV$exp_dir <- "~/buckets/b1/exp/"
-# envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
-# envg$EXPENV$wf_dir_local <- "~/flow/"
-# envg$EXPENV$repo_dir <- "~/labo2024v1/"
-# envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
-# envg$EXPENV$arch_sem <- "mis_semillas.txt"
-
-# envg$EXPENV <- list()
-# envg$EXPENV$exp_dir <- paste0( R.utils::getAbsolutePath("../../buckets/b1/exp/"), "/" )
-# envg$EXPENV$wf_dir <- paste0( R.utils::getAbsolutePath("../../buckets/b1/flow/"), "/" )
-# #envg$EXPENV$wf_dir_local <- paste0( R.utils::getAbsolutePath("../../flow/"), "/" )
-# envg$EXPENV$wf_dir_local <- paste0( R.utils::getAbsolutePath("../../buckets/b1/flow/"), "/" )
-# envg$EXPENV$repo_dir <- paste0( getwd(), "/" )
-# envg$EXPENV$datasets_dir <- paste0( R.utils::getAbsolutePath("../../buckets/b1/datasets"), "/" )
-# envg$EXPENV$arch_sem <- "mis_semillas.txt"
 
 envg$EXPENV <- list()
 envg$EXPENV$exp_dir <- "~/buckets/b1/exp/"
@@ -159,7 +138,7 @@ FE_historia_guantesblancos <- function( pmyexp, pinputexps, pserver="local")
 
   param_local$meta$script <- "/src/workflow-01/541_FE_historia_boruta_100.r"
 
-  param_local$lag1 <- FALSE ##TRUE
+  param_local$lag1 <- TRUE 
   param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
   param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
 
