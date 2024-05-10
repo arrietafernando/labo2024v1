@@ -31,9 +31,9 @@ cols <- c("#D43F3A", "#EEA236", "#5CB85C", "#46B8DA", "#9632B8")
 
 ggplot(df, aes(x = x, y = value, color = variable)) +
   geom_point() +
-  geom_line(size=2) +
+  geom_line(linewidth=2) +
   scale_color_manual(values = cols) +
-  geom_text_repel(aes(label = sprintf("%.2f", value)), box.padding=0.8, size=4, min.segment.length=0) +
+  geom_label_repel(aes(label = sprintf("%.2f", value), size=1), box.padding=0.8, min.segment.length=0) +
   ggtitle("Título del gráfico") +
   theme_minimal() +
   theme( panel.grid.major.x = element_blank(),
@@ -45,9 +45,9 @@ ggplot(df, aes(x = x, y = value, color = variable)) +
 
 ggplot(df, aes(x = x, y = value, color = variable)) +
   geom_point() +
-  geom_line(size=2) +
+  geom_line(linewidth=2) +
   scale_color_manual(values = cols) +
-  geom_label(aes(label = sprintf("%.2f", value)), box.padding=0.8, size=4) +
+  geom_label(aes(label = sprintf("%.2f", value)), label.padding=unit(0.2, "lines")) +
   ggtitle("Título del gráfico") +
   theme_minimal() +
   theme( panel.grid.major.x = element_blank(),
